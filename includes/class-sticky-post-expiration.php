@@ -1,7 +1,15 @@
 <?php
+/*
+ * Exit if called directly.
+ */
+if ( ! defined( 'WPINC' ) ) die;
 
-if ( !class_exists( 'Sticky_Post_Expiration' ) ){
 
+if ( !class_exists('Sticky_Post_Expiration') ):
+
+    /**
+     * Class Sticky_Post_Expiration
+     */
     class Sticky_Post_Expiration {
 
         /**
@@ -31,6 +39,13 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
 
 
         /**
+         * @var plugin_url
+         * @since 1.0.0
+         */
+        public static $plugin_file = null;
+
+
+        /**
          * INSTANCE
          *
          * Ensures only one instance of Sticky_Post_Expiration is loaded or can be loaded.
@@ -40,9 +55,10 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
          * @see Sticky_Post_Expiration()
          * @return Sticky_Post_Expiration - Main instance
          */
-        public static function get_instance( $version, $plugin_path, $plugin_url ) {
-            if (is_null(self::$instance)) {
-                self::$instance = new self($version, $plugin_path, $plugin_url);
+        public static function instance( $version, $plugin_path, $plugin_url, $plugin_file ) {
+
+            if ( is_null( self::$instance ) ) {
+                self::$instance = new self( $version, $plugin_path, $plugin_url, $plugin_file );
             }
             return self::$instance;
         }
@@ -56,30 +72,29 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
          *
          * @since 1.0.0
          */
-        private function __construct( $version, $plugin_path, $plugin_url ) {
+        private function __construct( $version, $plugin_path, $plugin_url, $plugin_file ) {
 
             //Assign the class variables
-            $this::$version = $version;
-            $this::$plugin_path = $plugin_path;
-            $this::$plugin_url = $plugin_url;
+            self::$version = $version;
+            self::$plugin_path = $plugin_path;
+            self::$plugin_url = $plugin_url;
+            self::$plugin_file = $plugin_file;
+
 
             // Include required files
-            require_once( $this::$plugin_path . 'includes/class-metabox-field.php' );
+            require_once ( $plugin_path . 'includes/class-metabox-field.php' );
+            require_once ( $plugin_path . 'includes/class-custom-admin-column.php');
+
 
             // Register the deactivation hook
-            register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivation' ) );
+            register_deactivation_hook( $plugin_path.$plugin_file , array( $this, 'deactivation' ) );
 
-            // Register the uninstall hook - delete the post_meta field
-            register_uninstall_hook( __FILE__, array( __CLASS__, 'delete_plugin_options' ) );
 
             // Schedule the cron to check the sticky expiration
-            if( !wp_next_scheduled( 'spe_sticky_expiration' ) )
+            if( !wp_next_scheduled( 'spe_sticky_expiration' ) ){
                 wp_schedule_event( time(), 'twicedaily', 'spe_sticky_expiration' );
-
+            }
             add_action( 'spe_sticky_expiration', array( $this, 'check_sticky_expiration' ));
-
-            // Display the admin notification
-            //add_action( 'admin_notices', array( $this, 'check_sticky_expiration' ) ) ;
 
         }
 
@@ -91,23 +106,10 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
          * @return void
          * @since  1.0.0
          */
-        public function deactivation() {
-            //TODO get this to work
+        public static function deactivation() {
             wp_clear_scheduled_hook( 'spe_sticky_expiration' );
         }
 
-
-        /**
-         * Delete options table entries ONLY when plugin deactivated AND deleted
-         *
-         * @access public
-         * @return void
-         * @since  1.0.0
-         */
-        public function delete_plugin_options() {
-
-            delete_post_meta_by_key( 'sticky_expiration' );
-        }
 
 
         /**
@@ -120,7 +122,7 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
          * @return void
          * @since  1.0.0
          */
-        public function check_sticky_expiration() {
+        function check_sticky_expiration() {
 
             $sticky_posts = get_option( 'sticky_posts' );
 
@@ -140,8 +142,12 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
 
                         unstick_post( $sticky_post );
                         delete_post_meta( $sticky_post, 'sticky_expiration' );
+
+                        //DEVNOTE - debugging
                         $post_title = get_the_title( $sticky_post );
-                        wp_mail( "haleeben@gmail.com","Sticky Post Expired", "<p>Hi \n\n The post $post_title has expired</p>" );
+                        $email = get_option( 'admin_email' );
+                        wp_mail( $email,"Sticky Post Expired", "Hi \n\n The post $post_title has expired" );
+
                     }
 
                 endif;
@@ -149,7 +155,6 @@ if ( !class_exists( 'Sticky_Post_Expiration' ) ){
             endforeach;
         }
 
-
     } // end class
 
-} // end class_exists
+endif; // class_exists
