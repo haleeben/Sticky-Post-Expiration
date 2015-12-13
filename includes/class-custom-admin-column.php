@@ -48,10 +48,13 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
             // Add the admin column content
             add_action( 'manage_posts_custom_column',  array( $this, 'sticky_expiration_column_content' ), 10, 2);
 
+            // This is to stop the Fatal Error for the is_plugin_active()
+            include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
             /** Admin Columns Pro Code */
             if( is_plugin_active( 'admin-columns-pro/admin-columns-pro.php' ) ):
                 add_filter( 'cac/editable/is_column_editable/column=sticky_expiration', '__return_true' );
-                add_filter( 'cac/editable/editables_data',  array( $this,'column_editable_settings' ), 10, 2 );
+                add_filter( 'cac/editable/editables_data', array( $this,'column_editable_settings' ), 10, 2 );
                 add_filter( 'cac/editable/column_value/column=sticky_expiration', array( $this, 'column_value' ), 10, 4 );
                 add_filter( 'cac/editable/column_save/column=sticky_expiration', array( $this, 'column_save' ), 10, 5 );
             endif;
