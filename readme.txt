@@ -1,15 +1,15 @@
 
 === Sticky Post Expiration ===
-Contributors: (this should be a list of wordpress.org userid's)
-Donate link: http://example.com/
-Tags: comments, spam
-Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+Contributors: haleeben
+Donate link: https://ebenhale.com/sticky-post-expiration
+Tags: sticky, post, expiration
+Requires at least: 4.0
+Tested up to: 4.4
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Adds a datepicker field to the Publish metabox that will allow the user to set a sticky post expiration date.
+Adds a datepicker field to the post publish metabox that will allow the user to set a sticky post expiration date.
 
 == Description ==
 
@@ -40,14 +40,9 @@ you put the stable version, in order to eliminate any doubt.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
 1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress
-1. Use the Settings->Plugin Name screen to configure the plugin
-1. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Go to a post edit page and check the sticky post checkbox, a new filed will appear below.
 
 
 == Frequently Asked Questions ==
@@ -70,20 +65,19 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+= 1.0.1 =
+*Added support for Admin Columns Pro plugin
 
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
+= 1.0.0 =
+*Initial release
 
 == Upgrade Notice ==
 
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
+= 1.0.1 =
+Added support for Admin Columns Pro plugin
 
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
+= 1.0.0 =
+Initial release
 
 == Arbitrary section ==
 
