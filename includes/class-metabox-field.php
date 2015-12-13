@@ -20,6 +20,9 @@ if ( ! defined( 'WPINC' ) ) {
  * @return void
  */
 
+if ( ! class_exists( 'SPE_Metabox_Field' )):
+
+
 class SPE_Metabox_Field {
 
     /**
@@ -28,6 +31,21 @@ class SPE_Metabox_Field {
      */
     protected static $instance = null;
 
+
+    /**
+     * INSTANCE
+     *
+     * Ensures only one instance of Sticky_Post_Expiration is loaded or can be loaded.
+     *
+     * @since 1.0.0
+     * @return Sticky_Post_Expiration - Main instance
+     */
+    public static function instance() {
+        if ( is_null( self::$instance )) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     /**
      * SPE_Metabox_Field constructor.
@@ -48,20 +66,7 @@ class SPE_Metabox_Field {
     }
 
 
-    /**
-     * INSTANCE
-     *
-     * Ensures only one instance of Sticky_Post_Expiration is loaded or can be loaded.
-     *
-     * @since 1.0.0
-     * @return Sticky_Post_Expiration - Main instance
-     */
-    public static function instance() {
-        if ( is_null( self::$instance )) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+
 
 
     /**
@@ -126,7 +131,8 @@ class SPE_Metabox_Field {
         ( $date['year'] || $date['month'] || $date['day'] ) ? $valid_date = true : $valid_date = false;
 
         if( $valid_date ) {
-            update_post_meta( $post_id, 'sticky_expiration', $expiration );
+            $formatted_date = date_i18n( 'Ymd', strtotime( $expiration ));
+            update_post_meta( $post_id, 'sticky_expiration', $formatted_date );
         } else {
             delete_post_meta( $post_id, 'sticky_expiration' );
         }
@@ -155,6 +161,8 @@ class SPE_Metabox_Field {
 
 
 }// end class
+
+endif; // class exists
 
 SPE_Metabox_Field::instance();
 
