@@ -40,7 +40,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
         /**
          *
          */
-        public function __construct(){
+        private function __construct(){
 
             // Add a Sticky Expires admin column
             add_filter( 'manage_posts_columns', array( $this, 'add_sticky_expiration_column' ));
@@ -70,7 +70,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
          * @return mixed
 
          */
-        function add_sticky_expiration_column( $columns ) {
+        public function add_sticky_expiration_column( $columns ) {
             $columns['sticky_expiration'] = __( 'Sticky Expires', 'sticky_post_expiration' );
             return $columns;
         }
@@ -83,7 +83,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
          * @param $column
          * @param $post_id
          */
-        function sticky_expiration_column_content( $column, $post_id ) {
+        public function sticky_expiration_column_content( $column, $post_id ) {
 
             if( $column == 'sticky_expiration' ):
 
@@ -101,7 +101,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
 
 
         // Set the editable properties
-        function column_editable_settings( $editable_data, $model ) {
+        public function column_editable_settings( $editable_data, $model ) {
             $editable_data['sticky_expiration']['default_column'] = true; // Do not change this
             // Set the editability type.
             $editable_data['sticky_expiration']['type'] = 'date'; // Accepts 'text', 'select', 'textarea', 'media', 'float', 'togglable', 'select' and more.
@@ -110,7 +110,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
 
 
         // Retrieve the value that will be used for editing
-        function column_value( $value, $column, $id, $model ) {
+        public function column_value( $value, $column, $id, $model ) {
             // Retrieve the value that should be used for editing
             $value = get_post_meta( $id, 'sticky_expiration', true );
             return $value;
@@ -118,7 +118,7 @@ if ( !class_exists( 'SPE_Custom_Admin_Column') ):
 
 
         // Store the editable column value to the database
-        function column_save( $result, $column, $id, $value, $model ) {
+        public function column_save( $result, $column, $id, $value, $model ) {
             // Store the value that has been entered with inline-edit
              update_post_meta( $id, 'sticky_expiration', $value );
         }

@@ -99,6 +99,8 @@ if ( !class_exists('Sticky_Post_Expiration') ):
         }
 
 
+
+
         /**
          * This runs when the plugin is deactivated
          *
@@ -122,7 +124,7 @@ if ( !class_exists('Sticky_Post_Expiration') ):
          * @return void
          * @since  1.0.0
          */
-        function check_sticky_expiration() {
+        public function check_sticky_expiration() {
 
             $sticky_posts = get_option( 'sticky_posts' );
 
