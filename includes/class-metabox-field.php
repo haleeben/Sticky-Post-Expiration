@@ -75,7 +75,7 @@ class SPE_Metabox_Field {
      * @since 1.0.0
      * @return void
      */
-    function add_expiration_field() {
+    public function add_expiration_field() {
         global $post;
         if( ! empty( $post->ID ) ) {
             $expires = get_post_meta( $post->ID, 'sticky_expiration', true );
@@ -116,7 +116,7 @@ class SPE_Metabox_Field {
      * @param $post_id
      * @return void
      */
-    function save_expiration( $post_id ) {
+    public function save_expiration( $post_id ) {
 
         // Validation checks
         if( empty( $_POST['spe_expiration_nonce'] ) ) return;
@@ -152,7 +152,7 @@ class SPE_Metabox_Field {
      * @since 1.0.0
      * @return void
      */
-    function admin_scripts() {
+    public function admin_scripts() {
         wp_enqueue_style( 'jquery-ui-css', Sticky_Post_Expiration::$plugin_url . 'assets/css/datepicker.css' );
         wp_enqueue_script( 'jquery-ui-datepicker' );
         wp_enqueue_script( 'jquery-ui-slider' );
