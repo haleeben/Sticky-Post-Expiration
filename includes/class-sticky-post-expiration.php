@@ -96,7 +96,11 @@ if ( !class_exists('Sticky_Post_Expiration') ):
             }
             add_action( 'spe_sticky_expiration', array( $this, 'check_sticky_expiration' ));
 
+            add_action('admin_footer', array( $this,'check_sticky_expiration' ) );
+
         }
+
+
 
 
         /**
@@ -122,35 +126,38 @@ if ( !class_exists('Sticky_Post_Expiration') ):
          * @return void
          * @since  1.0.0
          */
-        function check_sticky_expiration() {
+        public function check_sticky_expiration() {
 
+            // Get all the sticky posts, will be array of post ID's
             $sticky_posts = get_option( 'sticky_posts' );
 
             foreach ( $sticky_posts as $sticky_post ):
 
+                // Get the sticky post expiration date
                 $spe_date = get_post_meta( $sticky_post, 'sticky_expiration', true );
-                $spe_date = !empty( $spe_date ) ? date_i18n( 'Y-n-d', strtotime( $spe_date ) ) : '';
 
-                if ( !empty( $spe_date ) ):
+                if ( !empty( $spe_date ) ){
 
-                    // Get the current time and the post's expiration date
-                    $current_time = current_time( 'timestamp' );
-                    $expiration = strtotime( $spe_date, current_time( 'timestamp' ));
+                    // Get the current time and the post's expiration date and convert them to DateTime objects to compare
+                    $current_time = new DateTime( current_time('Y-m-d') );
+                    $expires_date = new DateTime( $spe_date );
+
 
                     // Determine if current time is greater than the expiration date
-                    if ( $current_time >= $expiration ) {
+                    if ( $current_time > $expires_date ) {
 
                         unstick_post( $sticky_post );
                         delete_post_meta( $sticky_post, 'sticky_expiration' );
 
                         //DEVNOTE - debugging
                         $post_title = get_the_title( $sticky_post );
-                        $email = get_option( 'admin_email' );
-                        wp_mail( $email,"Sticky Post Expired", "Hi \n\n The post $post_title has expired" );
-
+                        $link = get_the_permalink( $sticky_post );
+                        add_filter('wp_mail_content_type',create_function('', 'return "text/html"; '));
+                         $email = get_option( 'admin_email' );
+                        wp_mail( $email, "Sticky Post Expired", "<p>Hi <br> The post <a href=\"$link\">$post_title</a> has expired</p>" );
                     }
 
-                endif;
+                }
 
             endforeach;
         }
